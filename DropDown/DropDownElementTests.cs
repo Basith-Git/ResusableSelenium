@@ -21,12 +21,21 @@ namespace ResusableSelenium.DropDown
             driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(30);
 
             driver.Url = "https://ej2.syncfusion.com/demos/#/tailwind3/drop-down-list/default.html";
+
+
+            SelectElement se = new SelectElement(driver.FindElement(By.XPath("//*[@aria-describedby='games']//select[2]")));
+            se.Options.ToList().ForEach(x => Console.WriteLine(x.GetAttribute("text")));
+        
+
+            //=================================
             var ele = driver.FindElement(By.XPath("//input[@placeholder='Select a game']"));
             IJavaScriptExecutor ex = (IJavaScriptExecutor)driver;
+            ex.ExecuteScript("(text) => document.querySelector('input[placeholder=\"Select a game\"]').value = 'Golf'", ele); // -- Not working in selenium
+
             ex.ExecuteScript("arguments[0].value='Football';",ele);
 
-
-
+            var text = ele.GetAttribute("value");
+            //=================================
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
             var element = driver.FindElement(By.XPath("//*[@id='games']"));
 
@@ -38,10 +47,7 @@ namespace ResusableSelenium.DropDown
 
            
 
-            SelectElement se = new SelectElement(element);
-            var s1 = se.AllSelectedOptions;
-            string s = se.SelectedOption.Text;
-            Console.WriteLine(s1);
+            
 
             // Set aria-disabled to false (if needed)
             ((IJavaScriptExecutor)driver).ExecuteScript("arguments[0].setAttribute('aria-disabled', 'false');",element);
